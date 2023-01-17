@@ -3,7 +3,7 @@ const app = express();
 const { getTopics } = require("../db/controller");
 
 app.get("/api/topics", getTopics);
-app.get("/api/articles", getArticle);
+// app.get("/api/articles", getArticle);
 
 // CUSTOM HANDLE ERROR
 app.use((req, res, next) => {
