@@ -4,11 +4,13 @@ const {
   getTopics,
   getArticles,
   sendArticlesById,
+  sendCommentsByArticleId,
 } = require("../db/controller");
 app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", sendArticlesById);
+app.get("/api/articles/:article_id/comments", sendCommentsByArticleId);
 
 // CUSTOM HANDLE ERROR
 app.use((req, res, next) => {

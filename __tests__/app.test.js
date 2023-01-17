@@ -108,6 +108,17 @@ describe("NC-News", () => {
         });
     });
   });
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("It should respond with an array of comments", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeInstanceOf(Array);
+          expect(body.comments).toHaveLength(11);
+        });
+    });
+  });
   describe("Handling errors", () => {
     test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)
