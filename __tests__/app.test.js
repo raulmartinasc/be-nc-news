@@ -57,14 +57,23 @@ describe("NC-News", () => {
           expect(res.body.articles).toHaveLength(12);
         });
     });
-    test("Each article should have the property comment_count", () => {
+    test("Each article should have the correct keys", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then((res) => {
-          console.log(res.body.articles);
           const arrayOfArticles = res.body.articles;
           arrayOfArticles.forEach((article) => {
+            expect(article).toHaveProperty("article_id", expect.any(Number));
+            expect(article).toHaveProperty("author", expect.any(String));
+            expect(article).toHaveProperty("title", expect.any(String));
+            expect(article).toHaveProperty("topic", expect.any(String));
+            expect(article).toHaveProperty("created_at", expect.any(String));
+            expect(article).toHaveProperty("votes", expect.any(Number));
+            expect(article).toHaveProperty(
+              "article_img_url",
+              expect.any(String)
+            );
             expect(article).toHaveProperty("comment_count", expect.any(String));
           });
         });

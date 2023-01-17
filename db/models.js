@@ -14,8 +14,11 @@ exports.fetchAllArticles = () => {
     )
     .then((result) => {
       const arrayOfArticles = result.rows;
-      result.rows.forEach((article) => {
+      arrayOfArticles.forEach((article) => {
         convertTimestampToDate(article);
+      });
+      arrayOfArticles.forEach((article) => {
+        Number(article["comment_count"]);
       });
       return arrayOfArticles;
     });
