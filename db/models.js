@@ -5,3 +5,5 @@ exports.fetchAllTopics = () => {
     return result.rows;
   });
 };
+
+exports.fetchAllArticles = () => {};
