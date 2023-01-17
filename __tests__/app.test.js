@@ -48,16 +48,28 @@ describe("NC-News", () => {
         });
     });
   });
-  // describe("GET /api/articles", () => {
-  //   test("It responds with an array of articles objects", () => {
-  //     return request(app)
-  //       .get("/api/articles")
-  //       .expect(200)
-  //       .then((res) => {
-  //         expect(res.body.articles).toHaveLength(12);
-  //       });
-  //   });
-  // });
+  describe("GET /api/articles", () => {
+    test("It responds with an array of articles objects", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.articles).toHaveLength(12);
+        });
+    });
+    test("Each article should have the property comment_count", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          console.log(res.body.articles);
+          const arrayOfArticles = res.body.articles;
+          arrayOfArticles.forEach((article) => {
+            expect(article).toHaveProperty("comment_count", expect.any(String));
+          });
+        });
+    });
+  });
   describe("Handling errors", () => {
     test("status:404, responds with an error message when the route does not exist", () => {
       return request(app)

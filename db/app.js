@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
-const { getTopics } = require("../db/controller");
+const { getTopics, getArticles } = require("../db/controller");
 
 app.get("/api/topics", getTopics);
-// app.get("/api/articles", getArticle);
+app.get("/api/articles", getArticles);
 
 // CUSTOM HANDLE ERROR
 app.use((req, res, next) => {
