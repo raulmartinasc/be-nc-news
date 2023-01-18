@@ -45,4 +45,23 @@ exports.selectCommentsByArticleId = (article_id) => {
     });
 };
 
-exports.postComment = (newComment, article_id) => {};
+exports.postComment = (newComment, article_id) => {
+  const { username, body } = newComment;
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then(({ rows }) => {
+      const article = rows[0];
+      if (!article) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      } else {
+        return db
+          .query(
+            `INSERT INTO comments (body, article_id, author) VALUES ($1, $2, $3) RETURNING *;`,
+            [body, article_id, username]
+          )
+          .then(({ rows }) => {
+            return rows[0];
+          });
+      }
+    });
+};

@@ -4,6 +4,7 @@ const {
   fetchAllArticles,
   selectArticlesById,
   selectCommentsByArticleId,
+  postComment,
 } = require("./models");
 
 exports.getTopics = (req, res, next) => {
@@ -42,7 +43,10 @@ exports.sendCommentsByArticleId = (req, res, next) => {
 
 exports.addComment = (req, res, next) => {
   const { article_id } = req.params;
-  postComment(req.body, article_id).then((comment) => {
-    res.status(201).send({ comment });
-  });
+  const newComment = req.body;
+  postComment(newComment, article_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
 };
