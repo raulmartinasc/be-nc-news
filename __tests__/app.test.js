@@ -109,16 +109,29 @@ describe("NC-News", () => {
     });
   });
   describe("GET /api/articles/:article_id/comments", () => {
-    test("It should respond with an array of comments", () => {
+    test("It should respond with an array of comments ordered by date", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).toBeInstanceOf(Array);
           expect(body.comments).toHaveLength(11);
+          const ArrayOfDates = body.comments.map((comment) => {
+            return comment.created_at;
+          });
+          expect(ArrayOfDates).toBeSorted();
+        });
+    });
+    test("It should respond with an empty array if the article exists but has no comments in it", () => {
+      return request(app)
+        .get("/api/articles/12/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toEqual([]);
         });
     });
   });
+  describe("POST /api/articles/:article_id/comments", () => {});
   describe("Handling errors", () => {
     test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)
@@ -142,6 +155,22 @@ describe("NC-News", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("status 400 /api/articles/notAnId/comments responds with an error message when is an invalid Id", () => {
+      return request(app)
+        .get("/api/articles/notAnId/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("status 404 /api/articles/9999/comments responds with an error article not found", () => {
+      return request(app)
+        .get("/api/articles/9999/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
         });
     });
   });
