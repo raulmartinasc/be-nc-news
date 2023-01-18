@@ -119,6 +119,20 @@ describe("NC-News", () => {
         });
     });
   });
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("It should respond with the posted comment", () => {
+      //arrange
+      const newComment = { username: "Raul", body: "Hello" };
+      //act
+      request(app)
+        .post("/api/articles/:article_id/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+          console.log(body.comment);
+        });
+    });
+  });
   describe("Handling errors", () => {
     test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)

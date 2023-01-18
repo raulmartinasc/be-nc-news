@@ -39,3 +39,10 @@ exports.sendCommentsByArticleId = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.addComment = (req, res, next) => {
+  const { article_id } = req.params;
+  postComment(req.body, article_id).then((comment) => {
+    res.status(201).send({ comment });
+  });
+};
