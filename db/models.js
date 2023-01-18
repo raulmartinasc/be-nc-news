@@ -44,3 +44,5 @@ exports.selectCommentsByArticleId = (article_id) => {
       return rows;
     });
 };
+
+exports.postComment = (newComment, article_id) => {};
