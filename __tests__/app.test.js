@@ -79,13 +79,58 @@ describe("NC-News", () => {
         });
     });
   });
+  describe("GET /api/articles/:article_id", () => {
+    test("It should respond with an article object by article_id", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toBeInstanceOf(Object);
+          expect(body.article.article_id).toBe(1);
+        });
+    });
+    test("It should have the correct keys", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toHaveProperty("author", expect.any(String));
+          expect(body.article).toHaveProperty("title", expect.any(String));
+          expect(body.article).toHaveProperty("article_id", expect.any(Number));
+          expect(body.article).toHaveProperty("body", expect.any(String));
+          expect(body.article).toHaveProperty("topic", expect.any(String));
+          expect(body.article).toHaveProperty("created_at", expect.any(String));
+          expect(body.article).toHaveProperty("votes", expect.any(Number));
+          expect(body.article).toHaveProperty(
+            "article_img_url",
+            expect.any(String)
+          );
+        });
+    });
+  });
   describe("Handling errors", () => {
-    test("status:404, responds with an error message when the route does not exist", () => {
+    test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)
         .get("/notARoute")
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Path not found");
+        });
+    });
+    test("status:404-/api/articles/99999 responds with an error message when that Id does not exist", () => {
+      return request(app)
+        .get("/api/articles/99999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
+        });
+    });
+    test("status 400 /api/articles/notAnID, responds with an error message when is an invalid Id", () => {
+      return request(app)
+        .get("/api/articles/notAnID")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
         });
     });
   });
