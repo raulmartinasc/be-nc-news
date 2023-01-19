@@ -48,16 +48,6 @@ describe("NC-News", () => {
         });
     });
   });
-  // describe("GET /api/users", () => {
-  //   test("It responds with an array of objects with the correct keys and values", () => {
-  //     return request(app)
-  //       .get("/api/users")
-  //       .expect(200)
-  //       .then(({ body }) => {
-  //         expect(body.users).toHaveLength(4);
-  //       });
-  //   });
-  // });
   describe("GET /api/articles", () => {
     test("It responds with an array of articles objects", () => {
       return request(app)
@@ -85,6 +75,22 @@ describe("NC-News", () => {
               expect.any(String)
             );
             expect(article).toHaveProperty("comment_count", expect.any(String));
+          });
+        });
+    });
+  });
+  describe("GET /api/users", () => {
+    test("It responds with an array of objects with all the users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users).toBeInstanceOf(Array);
+          expect(body.users).toHaveLength(4);
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
           });
         });
     });
