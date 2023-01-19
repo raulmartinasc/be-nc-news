@@ -5,12 +5,14 @@ const {
   getArticles,
   sendArticlesById,
   sendCommentsByArticleId,
+  addComment,
 } = require("../db/controller");
 app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", sendArticlesById);
 app.get("/api/articles/:article_id/comments", sendCommentsByArticleId);
+app.post("/api/articles/:article_id/comments", addComment);
 
 // CUSTOM HANDLE ERROR
 app.use((req, res, next) => {
@@ -25,7 +27,7 @@ app.use((err, req, res, next) => {
 });
 //PSQL THROWN ERRORS
 app.use((err, req, res, next) => {
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || err.code === "23502") {
     res.status(400).send({ msg: "Bad Request" });
   } else {
     next(err);

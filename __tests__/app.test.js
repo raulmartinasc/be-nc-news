@@ -131,7 +131,25 @@ describe("NC-News", () => {
         });
     });
   });
-  describe("POST /api/articles/:article_id/comments", () => {});
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("It should return the posted comment with the correct keys and values", () => {
+      //arrange
+      const newComment = { username: "rogersop", body: "Hello" };
+      //act
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment).toBeInstanceOf(Object);
+          expect(body.comment).toHaveProperty("article_id", expect.any(Number));
+          expect(body.comment).toHaveProperty("created_at", expect.any(String));
+          expect(body.comment).toHaveProperty("author", expect.any(String));
+          expect(body.comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(body.comment).toHaveProperty("body", expect.any(String));
+        });
+    });
+  });
   describe("Handling errors", () => {
     test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)
@@ -157,6 +175,25 @@ describe("NC-News", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
+    test("status 404 POST/api/articles/99999/comments responds with an error when that article Id does not exist", () => {
+      const newComment = { username: "rogersop", body: "Hello" };
+      return request(app)
+        .post("/api/articles/99999/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
+        });
+    });
+    test("status 400 POST/api/articles/1/comments responds with an error when is a malformed body or the user is missing required fields", () => {
+      const newComment = {};
+      return request(app)
+        .post(`/api/articles/1/comments`)
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+
     test("status 400 /api/articles/notAnId/comments responds with an error message when is an invalid Id", () => {
       return request(app)
         .get("/api/articles/notAnId/comments")
@@ -170,7 +207,7 @@ describe("NC-News", () => {
         .get("/api/articles/9999/comments")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("Article not found");
+          expect(body.msg).toBe("Article not found")
         });
     });
   });
