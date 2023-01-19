@@ -19,11 +19,11 @@ exports.fetchAllArticles = (query) => {
     });
     // sort_by
   } else if (
-    (query && query.hasOwnProperty("sort_by")) ||
-    (query && query.hasOwnProperty("sort_by") && query.hasOwnProperty("order"))
+    query &&
+    query.hasOwnProperty("sort_by") &&
+    query.hasOwnProperty("order")
   ) {
     const { sort_by, order } = query;
-
     //preventing sql injection
     if (
       ![
@@ -39,13 +39,34 @@ exports.fetchAllArticles = (query) => {
       ].includes(sort_by)
     ) {
       return Promise.reject({ status: 400, msg: "Invalid sort query" });
-    }
-    if (!["asc", "desc"].includes(order)) {
+    } else if (!["asc", "desc"].includes(order)) {
       return Promise.reject({ status: 400, msg: "Invalid order query" });
-      // Sort and order Logic
     } else {
       const sortByAndOrderStr = `SELECT * FROM articles ORDER BY ${sort_by.toUpperCase()} ${order.toUpperCase()};`;
       return db.query(sortByAndOrderStr).then(({ rows }) => {
+        return rows;
+      });
+    }
+  } else if (query && query.hasOwnProperty("sort_by")) {
+    const { sort_by } = query;
+    //preventing sql injection
+    if (
+      ![
+        "title",
+        "article_id",
+        "topic",
+        "author",
+        "body",
+        "created_at",
+        "votes",
+        "article_img_url",
+        "comment_count",
+      ].includes(sort_by)
+    ) {
+      return Promise.reject({ status: 400, msg: "Invalid sort query" });
+    } else {
+      const sortByStr = `SELECT * FROM articles ORDER BY ${sort_by.toUpperCase()};`;
+      return db.query(sortByStr).then(({ rows }) => {
         return rows;
       });
     }

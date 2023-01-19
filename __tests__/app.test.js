@@ -99,7 +99,7 @@ describe("NC-News", () => {
           expect(body.articles).toBeSorted();
         });
     });
-    test.only("Query order sorts the articles by any valid column in ASC order or DESC", () => {
+    test("Query order sorts the articles by any valid column in ASC order or DESC", () => {
       return request(app)
         .get("/api/articles?sort_by=votes&order=desc")
         .expect(200)
@@ -107,6 +107,7 @@ describe("NC-News", () => {
           expect(body.articles).toBeSorted({ descending: true });
         });
     });
+  });
   describe("GET /api/users", () => {
     test("It responds with an array of objects with all the users", () => {
       return request(app)
@@ -346,7 +347,7 @@ describe("NC-News", () => {
     });
     test("status 400 GET/api/articles/queries responds with an error when trying to do a sort_by query with a column that does not exist, preventing SQL injection", () => {
       return request(app)
-        .get("api/articles?sort_by=column")
+        .get("/api/articles?sort_by=column")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid sort query");
@@ -354,7 +355,7 @@ describe("NC-News", () => {
     });
     test("status 400 GET/api/articles/queries responds with an error when trying to do a sort_by and order query with a order value that does not exist, preventing SQL injection", () => {
       return request(app)
-        .get("api/articles?sort_by=author&order=random")
+        .get("/api/articles?sort_by=author&order=random")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid order query");
