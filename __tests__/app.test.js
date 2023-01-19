@@ -48,6 +48,16 @@ describe("NC-News", () => {
         });
     });
   });
+  // describe("GET /api/users", () => {
+  //   test("It responds with an array of objects with the correct keys and values", () => {
+  //     return request(app)
+  //       .get("/api/users")
+  //       .expect(200)
+  //       .then(({ body }) => {
+  //         expect(body.users).toHaveLength(4);
+  //       });
+  //   });
+  // });
   describe("GET /api/articles", () => {
     test("It responds with an array of articles objects", () => {
       return request(app)
