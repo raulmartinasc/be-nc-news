@@ -193,7 +193,8 @@ describe("NC-News", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
-
+        });
+    });
     test("status 400 /api/articles/notAnId/comments responds with an error message when is an invalid Id", () => {
       return request(app)
         .get("/api/articles/notAnId/comments")
@@ -207,7 +208,7 @@ describe("NC-News", () => {
         .get("/api/articles/9999/comments")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("Article not found")
+          expect(body.msg).toBe("Article not found");
         });
     });
   });
