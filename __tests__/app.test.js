@@ -79,6 +79,35 @@ describe("NC-News", () => {
         });
     });
   });
+  describe("GET /api/articles/queries", () => {
+    test("Query Topic should filter articles by the topic value specified in the query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toHaveLength(11);
+          body.articles.forEach((article) => {
+            expect(article.topic).toBe("mitch");
+          });
+        });
+    });
+    test("Query sort_by sorts the articles by any valid column", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSorted();
+        });
+    });
+    test.only("Query order sorts the articles by any valid column in ASC order or DESC", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes&order=desc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSorted({ descending: true });
+        });
+    });
+  });
   describe("GET /api/articles/:article_id", () => {
     test("It should respond with an article object by article_id", () => {
       return request(app)
@@ -298,6 +327,22 @@ describe("NC-News", () => {
             .then(({ body }) => {
               expect(body.msg).toBe("Bad Request");
             });
+        });
+    });
+    test("status 400 GET/api/articles/queries responds with an error when trying to do a sort_by query with a column that does not exist, preventing SQL injection", () => {
+      return request(app)
+        .get("api/articles?sort_by=column")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid sort query");
+        });
+    });
+    test("status 400 GET/api/articles/queries responds with an error when trying to do a sort_by and order query with a order value that does not exist, preventing SQL injection", () => {
+      return request(app)
+        .get("api/articles?sort_by=author&order=random")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid order query");
         });
     });
   });

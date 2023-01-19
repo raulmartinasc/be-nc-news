@@ -7,21 +7,64 @@ exports.fetchAllTopics = () => {
   });
 };
 
-exports.fetchAllArticles = () => {
-  return db
-    .query(
-      "SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;"
-    )
-    .then((result) => {
-      const arrayOfArticles = result.rows;
-      arrayOfArticles.forEach((article) => {
-        convertTimestampToDate(article);
-      });
-      arrayOfArticles.forEach((article) => {
-        Number(article["comment_count"]);
-      });
-      return arrayOfArticles;
+exports.fetchAllArticles = (query) => {
+  const queryValues = [];
+  let queryStr = "SELECT * FROM articles";
+  // topics
+  if (query && query.hasOwnProperty("topic")) {
+    queryValues.push(query.topic);
+    queryStr += " WHERE topic = $1;";
+    return db.query(queryStr, queryValues).then(({ rows }) => {
+      return rows;
     });
+    // sort_by
+  } else if (
+    (query && query.hasOwnProperty("sort_by")) ||
+    (query && query.hasOwnProperty("sort_by") && query.hasOwnProperty("order"))
+  ) {
+    const { sort_by, order } = query;
+
+    //preventing sql injection
+    if (
+      ![
+        "title",
+        "article_id",
+        "topic",
+        "author",
+        "body",
+        "created_at",
+        "votes",
+        "article_img_url",
+        "comment_count",
+      ].includes(sort_by)
+    ) {
+      return Promise.reject({ status: 400, msg: "Invalid sort query" });
+    }
+    if (!["asc", "desc"].includes(order)) {
+      return Promise.reject({ status: 400, msg: "Invalid order query" });
+      // Sort and order Logic
+    } else {
+      const sortByAndOrderStr = `SELECT * FROM articles ORDER BY ${sort_by.toUpperCase()} ${order.toUpperCase()};`;
+      return db.query(sortByAndOrderStr).then(({ rows }) => {
+        return rows;
+      });
+    }
+  } else {
+    return db
+      .query(
+        "SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;"
+      )
+      .then((result) => {
+        const arrayOfArticles = result.rows;
+        arrayOfArticles.forEach((article) => {
+          convertTimestampToDate(article);
+        });
+        arrayOfArticles.forEach((article) => {
+          Number(article["comment_count"]);
+        });
+        return arrayOfArticles;
+      });
+  }
 };
 
 exports.selectArticlesById = (article_id) => {
