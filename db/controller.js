@@ -2,6 +2,7 @@ const topics = require("./data/test-data/topics");
 const {
   fetchAllTopics,
   fetchAllArticles,
+  fetchAllUsers,
   selectArticlesById,
   selectCommentsByArticleId,
   postComment,
@@ -21,6 +22,14 @@ exports.getArticles = (req, res, next) => {
   fetchAllArticles(query)
     .then((articles) => {
       res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.getUsers = (req, res, next) => {
+  fetchAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };
