@@ -6,6 +6,7 @@ const {
   sendArticlesById,
   sendCommentsByArticleId,
   addComment,
+  addVote,
 } = require("../db/controller");
 app.use(express.json());
 app.get("/api/topics", getTopics);
@@ -13,6 +14,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", sendArticlesById);
 app.get("/api/articles/:article_id/comments", sendCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addComment);
+app.patch("/api/articles/:article_id/", addVote);
 
 // CUSTOM HANDLE ERROR
 app.use((req, res, next) => {
