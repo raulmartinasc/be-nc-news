@@ -39,9 +39,26 @@ exports.selectArticlesById = (article_id) => {
 
 exports.selectCommentsByArticleId = (article_id) => {
   return db
-    .query("SELECT * FROM comments WHERE article_id = $1;", [article_id])
+    .query("SELECT * FROM articles WHERE article_id =$1;", [article_id])
     .then(({ rows }) => {
-      return rows;
+      const article = rows[0];
+      if (!article) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      } else {
+        return db
+          .query(
+            "SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at;",
+            [article_id]
+          )
+          .then(({ rows }) => {
+            const comment = rows[0];
+            if (!comment) {
+              return [];
+            } else {
+              return rows;
+            }
+          });
+      }
     });
 };
 
