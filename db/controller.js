@@ -5,6 +5,7 @@ const {
   selectArticlesById,
   selectCommentsByArticleId,
   postComment,
+  incrementVoteCount,
 } = require("./models");
 
 exports.getTopics = (req, res, next) => {
@@ -47,6 +48,16 @@ exports.addComment = (req, res, next) => {
   postComment(newComment, article_id)
     .then((comment) => {
       res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.addVote = (req, res, next) => {
+  const newVote = req.body;
+  const { article_id } = req.params;
+  incrementVoteCount(newVote, article_id)
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch(next);
 };

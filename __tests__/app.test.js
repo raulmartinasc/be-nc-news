@@ -150,6 +150,66 @@ describe("NC-News", () => {
         });
     });
   });
+  describe("PATCH /api/articles/:article_id", () => {
+    test("It should respond with the updated article with all the correct keys and values incrementing the votes counter", () => {
+      //arrange
+      const newVote = { inc_votes: 1 };
+      const articleBeforeUpdate = {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1594329060000,
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      };
+      //act
+      return request(app)
+        .patch("/api/articles/1")
+        .send(newVote)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.article.article_id).toBe(1);
+          expect(body.article.votes).toBe(101);
+          // Properties and keys
+          expect(body.article).toHaveProperty("article_id", expect.any(Number));
+          expect(body.article).toHaveProperty("title", expect.any(String));
+          expect(body.article).toHaveProperty("topic", expect.any(String));
+          expect(body.article).toHaveProperty("author", expect.any(String));
+          expect(body.article).toHaveProperty("body", expect.any(String));
+          expect(body.article).toHaveProperty("created_at", expect.any(String));
+          expect(body.article).toHaveProperty("votes", expect.any(Number));
+          expect(body.article).toHaveProperty(
+            "article_img_url",
+            expect.any(String)
+          );
+        });
+    });
+    test("It should respond with the decremented counter when inc_votes is negative", () => {
+      //arrange
+      const newVote = { inc_votes: -50 };
+      const articleBeforeUpdate = {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1594329060000,
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      };
+      //act
+      return request(app)
+        .patch("/api/articles/1")
+        .send(newVote)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.article.article_id).toBe(1);
+          expect(body.article.votes).toBe(50);
+        });
+    });
+  });
   describe("Handling errors", () => {
     test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)
@@ -209,6 +269,35 @@ describe("NC-News", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Article not found");
+        });
+    });
+    test("status 404 PATCH/api/articles/9999 responds with an error when that article_id does not exist", () => {
+      const newVote = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/articles/9999")
+        .send(newVote)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
+        });
+    });
+    test("status 400 PATCH/api/articles/1 responds with an error when it is a malformed body or the user is missing required fields", () => {
+      const newVote = {};
+      const newVote2 = { inc_votes: "hello" };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(newVote)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+          // Incorrect data type
+          return request(app)
+            .patch("/api/articles/1")
+            .send(newVote2)
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Bad Request");
+            });
         });
     });
   });
