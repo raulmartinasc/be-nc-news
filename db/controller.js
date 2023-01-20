@@ -1,4 +1,5 @@
 const topics = require("./data/test-data/topics");
+const endPoints = require("../endpoints.json");
 const {
   fetchAllTopics,
   fetchAllArticles,
@@ -9,6 +10,10 @@ const {
   deleteCommentById,
   incrementVoteCount,
 } = require("./models");
+
+exports.getAllPaths = (req, res, next) => {
+  res.status(200).send(endPoints);
+};
 
 exports.getTopics = (req, res, next) => {
   fetchAllTopics()

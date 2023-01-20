@@ -9,6 +9,16 @@ afterAll(() => {
 });
 
 describe("NC-News", () => {
+  describe("GET api", () => {
+    test("Responds with a JSON describing all the endpoints available", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toBeInstanceOf(Object);
+        });
+    });
+  });
   describe("GET /api/topics", () => {
     test("It responds with an array of topics objects", () => {
       //arrange
