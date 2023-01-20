@@ -255,6 +255,16 @@ describe("NC-News", () => {
         });
     });
   });
+  // describe("DELETE /api/comments/:comment_id", () => {
+  //   test("Should delete the given comment by comment_id and responds with no content", () => {
+  //     request(app)
+  //       .delete("api/comments/1")
+  //       .expect(204)
+  //       .then(({ body }) => {
+  //         console.log(body);
+  //       });
+  //   });
+  // });
   describe("Handling errors", () => {
     test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)

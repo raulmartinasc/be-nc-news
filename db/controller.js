@@ -6,6 +6,7 @@ const {
   selectArticlesById,
   selectCommentsByArticleId,
   postComment,
+  deleteCommentById,
   incrementVoteCount,
 } = require("./models");
 
@@ -70,4 +71,11 @@ exports.addVote = (req, res, next) => {
       res.status(201).send({ article });
     })
     .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  deleteCommentById(comment_id).then((comment) => {
+    res.status(204).send({ comment });
+  });
 };
