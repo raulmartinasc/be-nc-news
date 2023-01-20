@@ -1,1 +1,133 @@
-
+{
+  "GET /api": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/topics": {
+    "description": "serves an array of all topics",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+  },
+  "GET /api/articles": {
+    "description": "serves an array of all topics",
+    "queries": ["topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341
+        }
+      ]
+    },
+    "exampleResponseQuery=topic": {
+      "articles with topic mitch": [
+        {
+          "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": "2020-07-09T20:11:00.000Z",
+          "votes": 100,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+      ]
+    },
+    "exampleResponseQuery=sort_by": {
+      "articles sorted by column votes": [
+        { "OtherProperties": "OtherProperties", "votes": 100 },
+        { "OtherProperties": "OtherProperties", "votes": 0 }
+      ]
+    },
+    "exampleResponseQuery=sort_by&order=desc": {
+      "articles sorted by column votes": [
+        { "OtherProperties": "OtherProperties", "votes": 0 },
+        { "OtherProperties": "OtherProperties", "votes": 100 }
+      ]
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": [
+      {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    ]
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article by id",
+    "queries": [],
+    "exampleResponse": {
+      "article_id = 1": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        "comment_count": "11"
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments by article id",
+    "queries": [],
+    "exampleResponse": {
+      "comments of article_id = 1": [
+        {
+          "comment_id": 9,
+          "body": "Superficially charming",
+          "article_id": 1,
+          "author": "icellusedkars",
+          "votes": 0,
+          "created_at": "2020-01-01T03:08:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "post a comment and responds with the comment",
+    "exampleRequest": {
+      "newComment": { "username": "rogersop", "body": "Hello" }
+    },
+    "exampleResponse": {
+      "responseComment": {
+        "comment_id": 19,
+        "body": "Hello",
+        "article_id": 1,
+        "author": "rogersop",
+        "votes": 0,
+        "created_at": "2023-01-20T13:47:30.023Z"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "can increase or decrease the quantity of votes and responds with the updated article",
+    "exampleRequest": {
+      "newVote": { "inc_votes": 1 }
+    },
+    "exampleResponse": {
+      "article_id": 1,
+      "title": "Living in the shadow of a great man",
+      "topic": "mitch",
+      "author": "butter_bridge",
+      "body": "I find this existence challenging",
+      "created_at": "2020-07-09T20:11:00.000Z",
+      "votes": 101,
+      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    }
+  },
+  "DELETE /api/comments/comment_id": {
+    "description": "Delete a comment by id",
+    "example": "api/comments/1"
+  }
+}

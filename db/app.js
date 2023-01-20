@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const {
+  getAllPaths,
   getTopics,
   getArticles,
   getUsers,
@@ -11,6 +12,7 @@ const {
   addVote,
 } = require("../db/controller");
 app.use(express.json());
+app.get("/api", getAllPaths);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/users", getUsers);
