@@ -150,6 +150,10 @@ describe("NC-News", () => {
             "article_img_url",
             expect.any(String)
           );
+          expect(body.article).toHaveProperty(
+            "comment_count",
+            expect.any(String)
+          );
         });
     });
   });
