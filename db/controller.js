@@ -75,7 +75,9 @@ exports.addVote = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
-  deleteCommentById(comment_id).then((comment) => {
-    res.status(204).send({ comment });
-  });
+  deleteCommentById(comment_id)
+    .then((comment) => {
+      res.status(204).send({ comment });
+    })
+    .catch(next);
 };

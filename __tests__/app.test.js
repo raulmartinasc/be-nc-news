@@ -255,16 +255,24 @@ describe("NC-News", () => {
         });
     });
   });
-  // describe("DELETE /api/comments/:comment_id", () => {
-  //   test("Should delete the given comment by comment_id and responds with no content", () => {
-  //     request(app)
-  //       .delete("api/comments/1")
-  //       .expect(204)
-  //       .then(({ body }) => {
-  //         console.log(body);
-  //       });
-  //   });
-  // });
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("Should delete the given comment by comment_id and responds with no content", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toEqual({});
+        })
+        .then(() => {
+          return request(app)
+            .get("/api/comments/1")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Path not found");
+            });
+        });
+    });
+  });
   describe("Handling errors", () => {
     test("status:404-/notARoute, responds with an error message when the route does not exist", () => {
       return request(app)
@@ -369,6 +377,22 @@ describe("NC-News", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid order query");
+        });
+    });
+    test("status 404 DELETE/api/comments/9999 responds with an error if the comment_id does not exist", () => {
+      return request(app)
+        .delete("/api/comments/9999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Comment not found");
+        });
+    });
+    test("status 400 DELETE/api/comments/comment4 responds with an error if it's and invalid comment id", () => {
+      return request(app)
+        .delete("/api/comments/comment4")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
         });
     });
   });
