@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const {
   getAllPaths,
   getTopics,
@@ -11,6 +12,7 @@ const {
   deleteComment,
   addVote,
 } = require("../db/controller");
+app.use(cors());
 app.use(express.json());
 app.get("/api", getAllPaths);
 app.get("/api/topics", getTopics);
